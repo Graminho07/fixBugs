@@ -4,6 +4,7 @@ dotenv.config();
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import userRoutes from './routes/user.routes'
 
 const app = express()
 
@@ -13,6 +14,8 @@ app.use(express.json())
 app.get('/', (req, res) => {
   res.send('API Fix Bugs funcionando! 🐞')
 })
+
+app.use('/', userRoutes)
 
 console.log('🔍 URI Mongo:', process.env.MONGO_URI)
 

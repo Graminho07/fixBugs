@@ -1,20 +1,18 @@
-import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Register from './layouts/Register';
+import Login from './layouts/Login';
+import Dashboard from './layouts/Dashboard';
+import PrivateRoute from './routes/PrivateRoute';
 
 function App() {
-  const [mensagem, setMensagem] = useState('');
-
-  useEffect(() => {
-    fetch('http://localhost:3001/api/teste')
-      .then(res => res.json())
-      .then(data => setMensagem(data.mensagem))
-      .catch(err => console.error(err));
-  }, []);
-
   return (
-    <div>
-      <h1>Front-end React</h1>
-      <p>{mensagem}</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<PrivateRoute><Register /></PrivateRoute>} />
+        <Route path="/login" element={<PrivateRoute><Login /></PrivateRoute>} />
+        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}/>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
