@@ -1,11 +1,19 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Dashboard() {
-
   const navigate = useNavigate();
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleLogout = () => {
-    alert("Logout realizado!");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.setItem("isLoggedIn", "false");
     navigate("/login");
   };
 
@@ -52,8 +60,7 @@ export default function Dashboard() {
               backgroundColor: "#f9f9f9",
               textAlign: "center",
             }}
-          >
-          </div>
+          ></div>
 
           <div
             style={{
@@ -64,8 +71,7 @@ export default function Dashboard() {
               backgroundColor: "#f9f9f9",
               textAlign: "center",
             }}
-          >
-          </div>
+          ></div>
 
           <div
             style={{
@@ -76,8 +82,7 @@ export default function Dashboard() {
               backgroundColor: "#f9f9f9",
               textAlign: "center",
             }}
-          >
-          </div>
+          ></div>
         </div>
       </section>
     </div>

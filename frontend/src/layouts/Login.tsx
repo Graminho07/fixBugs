@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 interface LoginResponse {
   token: string;
@@ -16,15 +16,23 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      localStorage.setItem("isLoggedIn", "true");
+      navigate("/dashboard");
+    } else {
+      localStorage.setItem("isLoggedIn", "false");
+    }
+  }, [navigate]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       const res = await fetch("http://localhost:5000/loginUser", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
@@ -37,7 +45,7 @@ export default function Login() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-
+      localStorage.setItem("isLoggedIn", "true");
       alert("✅ Login realizado com sucesso!");
       navigate("/dashboard");
     } catch (err: unknown) {
@@ -66,6 +74,7 @@ export default function Login() {
           required
         />
         <button type="submit">Entrar</button>
+        <Link to="/register">Ainda não tem uma conta? Cadastre-se!</Link>
       </form>
     </div>
   );

@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -26,9 +29,9 @@ export default function Register() {
         throw new Error(err.message || "Erro no cadastro");
       }
 
-      const data = await res.json();
-      alert("✅ Usuário cadastrado com sucesso!");
-      console.log(data);
+      localStorage.setItem("isLoggedIn", "true");
+
+      navigate("/dashboard");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Ocorreu um erro inesperado";
@@ -65,18 +68,17 @@ export default function Register() {
       />
       <label>
         <input
-          type="checkbox"
+          type="radio"
           name="role"
-          value="dev"
-          checked={form.role === "dev"}
+          value="developer"
+          checked={form.role === "developer"}
           onChange={(e) => setForm({ ...form, role: e.target.value })}
         />
         Dev
       </label>
-
       <label>
         <input
-          type="checkbox"
+          type="radio"
           name="role"
           value="admin"
           checked={form.role === "admin"}
@@ -84,10 +86,9 @@ export default function Register() {
         />
         Admin
       </label>
-
       <label>
         <input
-          type="checkbox"
+          type="radio"
           name="role"
           value="tester"
           checked={form.role === "tester"}
@@ -95,8 +96,8 @@ export default function Register() {
         />
         Tester
       </label>
-
       <button type="submit">Cadastrar</button>
+      <Link to="/login">Já tem uma conta? Faça Login!</Link>
     </form>
   );
 }
