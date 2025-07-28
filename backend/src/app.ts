@@ -5,6 +5,7 @@ import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import userRoutes from './routes/user.routes'
+import bugRoutes from './routes/bug.routes'
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/', userRoutes)
+app.use('/', bugRoutes)
 
 console.log('🔍 URI Mongo:', process.env.MONGO_URI)
 

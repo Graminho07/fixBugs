@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const bugSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true, unique: true },
+    bugId: { type: Number, unique: true, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
     status: {
@@ -13,9 +13,9 @@ const bugSchema = new mongoose.Schema(
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
-      required: true,
+      default: "medium",
     },
-    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    assignedTo: { type: String },
   },
   { timestamps: true }
 );

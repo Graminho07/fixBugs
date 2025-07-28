@@ -8,6 +8,8 @@ export default function CreateBug() {
     title: "",
     description: "",
     status: "open",
+    priority: "medium",
+    assignedTo: "",
   });
 
   const handleChange = (
@@ -64,6 +66,23 @@ export default function CreateBug() {
         <option value="in-progress">Em Progresso</option>
         <option value="closed">Fechado</option>
       </select>
+      <select
+        name="priority"
+        value={form.priority}
+        onChange={handleChange}
+        required
+      >
+        <option value="low">Baixa</option>
+        <option value="medium">Média</option>
+        <option value="high">Alta</option>
+      </select>
+      <input
+        type="text"
+        name="assignedTo"
+        placeholder="Para:"
+        value={form.assignedTo}
+        onChange={handleChange}
+      />
       <button type="submit">Criar Bug</button>
       <Link to="/dashboard">Voltar ao Dashboard</Link>
     </form>
