@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import "../styles/RegisterStyle.css";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -39,65 +40,69 @@ export default function Register() {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
+    return (
+    <div className="body">
       <h2>Cadastro</h2>
-      <input
-        type="text"
-        name="name"
-        placeholder="Nome"
-        value={form.name}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={form.email}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Senha"
-        value={form.password}
-        onChange={handleChange}
-        required
-      />
-      <label>
+      <form onSubmit={handleSubmit}>
         <input
-          type="radio"
-          name="role"
-          value="developer"
-          checked={form.role === "developer"}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          type="text"
+          name="name"
+          placeholder="Nome"
+          value={form.name}
+          onChange={handleChange}
+          required
         />
-        Dev
-      </label>
-      <label>
         <input
-          type="radio"
-          name="role"
-          value="admin"
-          checked={form.role === "admin"}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
         />
-        Admin
-      </label>
-      <label>
         <input
-          type="radio"
-          name="role"
-          value="tester"
-          checked={form.role === "tester"}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          type="password"
+          name="password"
+          placeholder="Senha"
+          value={form.password}
+          onChange={handleChange}
+          required
         />
-        Tester
-      </label>
-      <button type="submit">Cadastrar</button>
-      <Link to="/login">Já tem uma conta? Faça Login!</Link>
-    </form>
+        <label>
+          <input
+            type="radio"
+            name="role"
+            value="developer"
+            checked={form.role === "developer"}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+          />
+          Dev
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="role"
+            value="admin"
+            checked={form.role === "admin"}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+          />
+          Admin
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="role"
+            value="tester"
+            checked={form.role === "tester"}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+          />
+          Tester
+        </label>
+        <button type="submit">Cadastrar</button>
+        <p className="link">
+          <Link to="/login">Já tem uma conta? Faça Login!</Link>
+        </p>
+      </form>
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import "../styles/LoginStyle.css";
 
 interface LoginResponse {
   token: string;
@@ -74,7 +75,7 @@ export default function Login() {
           required
         />
         <button type="submit">Entrar</button>
-        <Link to="/register">Ainda não tem uma conta? Cadastre-se!</Link>
+        <Link to="/">Ainda não tem uma conta? Cadastre-se!</Link>
       </form>
     </div>
   );

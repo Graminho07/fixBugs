@@ -13,7 +13,7 @@ const bugSchema = new mongoose.Schema(
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
-      default: "medium",
+      required: true,
     },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
