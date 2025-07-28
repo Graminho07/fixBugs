@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const bugSchema = new mongoose.Schema(
   {
-    bugId: { type: Number, unique: true, required: true },
+    bugId: { type: Number, unique: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
     status: {

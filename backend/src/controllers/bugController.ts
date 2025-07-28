@@ -1,17 +1,16 @@
 import Bug from "../models/Bug";
 
-const generateBugId = async (): Promise<number> => {
-  let id: number = 0;
+export const generateBugId = async (): Promise<number> => {
+  let bugId: number = 0;
   let exists = true;
 
   while (exists) {
-    id = Math.floor(100000 + Math.random() * 900000);
-    const existing = await Bug.findOne({ bugId: id });
+    bugId = Math.floor(100000 + Math.random() * 900000);
+    const existing = await Bug.findOne({ bugId: bugId });
     if (!existing) exists = false;
   }
-  return id;
+  return bugId;
 };
-
 
 export const createBug = async (req: any, res: any) => {
   const { title, description, priority, assignedTo } = req.body;
@@ -28,7 +27,7 @@ export const createBug = async (req: any, res: any) => {
       title,
       description,
       priority,
-      assignedTo,
+      assignedTo: assignedTo || undefined,
     });
 
     res.status(201).json(newBug);

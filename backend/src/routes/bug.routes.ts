@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  generateBugId,
   createBug,
   updateBug,
   deleteBug,
@@ -8,6 +9,7 @@ import {
 
 const router = Router();
 
+router.post("/generateBugId", generateBugId)
 router.post("/createBug", createBug);
 router.get("/getBugs", getBugs);
 router.put("/updateBug/:id", updateBug);
