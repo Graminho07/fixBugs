@@ -15,10 +15,6 @@ export const generateBugId = async (): Promise<number> => {
 export const createBug = async (req: any, res: any) => {
   const { title, description, priority, assignedTo } = req.body;
 
-  if (!assignedTo || typeof assignedTo !== "string") {
-    return res.status(400).json({ error: "assignedTo é obrigatório e deve ser string" });
-  }
-
   try {
     const bugId = await generateBugId();
 
@@ -37,31 +33,32 @@ export const createBug = async (req: any, res: any) => {
   }
 };
 
-export const getBugs = async (req: any, res: any) => {
+export const getBug = async (req: any, res: any) => {
+  const { bugId } = req.params;
   try {
-    const bugs = await Bug.find().populate("assignedTo", "name email");
-    res.status(200).json(bugs);
-  } catch (err: any) {
-    console.error("Erro ao buscar bugs:", err);
-    res.status(500).json({ error: err.message });
+    const bug = await Bug.findOne({ bugId: Number(bugId) });
+    if (!bug) {
+      return res.status(404).json({ message: "Bug não encontrado" });
+    }
+    res.json(bug);
+  } catch (err) {
+    res.status(500).json({ message: "Erro ao buscar bug" });
   }
 };
 
 export const updateBug = async (req: any, res: any) => {
-  const { id } = req.params;
+  const { bugId } = req.params;
   const { title, description, status, priority, assignedTo } = req.body;
 
   try {
     const updatedBug = await Bug.findByIdAndUpdate(
-      id,
+      bugId,
       { title, description, status, priority, assignedTo },
       { new: true }
     ).populate("assignedTo", "name email");
-
     if (!updatedBug) {
       return res.status(404).json({ error: "Bug not found" });
     }
-
     res.status(200).json(updatedBug);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -84,7 +81,7 @@ export const deleteBug = async (req: any, res: any) => {
 export default {
   generateBugId,
   createBug,
-  getBugs,
+  getBug,
   updateBug,
   deleteBug,
 };

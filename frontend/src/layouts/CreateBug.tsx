@@ -20,28 +20,33 @@ export default function CreateBug() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("http://localhost:5000/createBug", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const res = await fetch("http://localhost:5000/createBug", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Erro ao criar bug");
-      }
-
-      alert("✅ Bug criado com sucesso!");
-      navigate("/dashboard");
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Ocorreu um erro inesperado";
-      alert("❌ Erro: " + message);
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || "Erro ao criar bug");
     }
-  };
+
+    const newBug = await res.json();
+    const bugId = newBug.bugId;
+
+    alert(`✅ Bug criado com sucesso! Acesse em: http://localhost:5000/bug/${bugId}`);
+
+    navigate(`/bug/${bugId}`);
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : "Ocorreu um erro inesperado";
+    alert("❌ Erro: " + message);
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit}>
