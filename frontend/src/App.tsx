@@ -8,6 +8,7 @@ import BugDetails from "./layouts/BugDetails";
 import BugEditor from "./layouts/BugEditor";
 import CreateTeam from "./layouts/CreateTeam";
 import TeamDetails from "./layouts/TeamDetails";
+import TeamEditor from "./layouts/TeamEditor";
 import Teams from "./layouts/Teams";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/bug/:bugId/edit" element={<PrivateRoute> <BugEditor/> </PrivateRoute>} />
         <Route path="/createTeam" element={<PrivateRoute> <CreateTeam/> </PrivateRoute>} />
         <Route path="/team/:teamId" element={<PrivateRoute> <TeamDetails/> </PrivateRoute>} />
+        <Route path="/team/:teamId/edit" element={<PrivateRoute> <TeamEditor/> </PrivateRoute>} />
         <Route path="/teams" element={<PrivateRoute> <Teams/> </PrivateRoute>} />
       </Routes>
     </BrowserRouter>

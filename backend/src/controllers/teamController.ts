@@ -71,19 +71,41 @@ export const updateTeam = async (req: any, res: any) => {
   const { name, description, members } = req.body;
 
   try {
+    const emailList: string[] = Array.isArray(members)
+      ? members.map((email: string) => email.trim().toLowerCase())
+      : members
+      ? members.split(",").map((email: string) => email.trim().toLowerCase())
+      : [];
+
+    const users = await User.find({ email: { $in: emailList } });
+
+    if (users.length !== emailList.length) {
+      const foundEmails = users.map((u) => u.email);
+      const notFound = emailList.filter((email) => !foundEmails.includes(email));
+      return res.status(400).json({
+        message: `Os seguintes membros não foram encontrados: ${notFound.join(", ")}`,
+      });
+    }
+
+    const memberIds = users.map((user) => user._id);
+
     const updatedTeam = await Team.findOneAndUpdate(
       { teamId: Number(teamId) },
-      { name, description, members },
+      {
+        name,
+        description,
+        members: memberIds,
+      },
       { new: true }
     );
 
     if (!updatedTeam) {
       return res.status(404).json({ error: "Equipe não encontrada" });
     }
-    
+
     res.status(200).json(updatedTeam);
   } catch (err: any) {
-    console.error("Erro ao atualizar equipe: ", err)
+    console.error("Erro ao atualizar equipe: ", err);
     res.status(500).json({ error: err.message });
   }
 };

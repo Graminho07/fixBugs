@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 type Member = {
-    name: string;
     email: string;
 };
 
@@ -92,14 +91,14 @@ export default function TeamEditor() {
             <input
                 type="text"
                 name="name"
-                placeholder="Nome da Equipe"
+                placeholder="Novo nome da equipe"
                 value={form.name}
                 onChange={handleChange}
                 required
             />
             <textarea
                 name="description"
-                placeholder="Descrição da Equipe"
+                placeholder="Nova descrição da equipe"
                 value={form.description}
                 onChange={handleChange}
                 required
@@ -107,7 +106,7 @@ export default function TeamEditor() {
             <input
                 type="text"
                 name="members"
-                placeholder="Membros (separados por vírgula)"
+                placeholder="Novos Membros"
                 value={form.members}
                 onChange={handleChange}
             />

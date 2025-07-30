@@ -54,6 +54,8 @@ export default function TeamDetails() {
       <p><strong>Descrição:</strong> {team.description}</p>
       <p><strong>Membros:</strong> {team.members.length > 0 ? team.members.map((m) => m.name).join(", ") : "Nenhum membro"}</p>
 
+      <Link to={`/team/${team.teamId}/edit`}><button>Editar equipe</button></Link>
+      <br />
       <Link to="/dashboard">Voltar ao Dashboard</Link>
       <br />
       <Link to="/teams">Voltar às minhas equipes</Link>
