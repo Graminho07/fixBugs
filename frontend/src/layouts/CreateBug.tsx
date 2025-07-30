@@ -47,7 +47,6 @@ export default function CreateBug() {
   }
 };
 
-
   return (
     <form onSubmit={handleSubmit}>
       <h2>Criar Bug</h2>

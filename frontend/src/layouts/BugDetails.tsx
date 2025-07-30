@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 type Bug = {
   bugId: number;
@@ -51,6 +52,16 @@ export default function BugDetails() {
       <p><strong>Status:</strong> {bug.status}</p>
       <p><strong>Prioridade:</strong> {bug.priority}</p>
       <p><strong>Atribuído a:</strong> {bug.assignedTo || "Ninguém"}</p>
+
+      <Link to={`/bug/${bug.bugId}/edit`}>
+        <button style={{ margin: "1rem 0", padding: "0.5rem 1rem" }}>
+          ✏️ Editar Bug
+        </button>
+      </Link>
+      <br></br>
+      <Link to="/createBug">Criar bug</Link>
+      <br></br>
+      <Link to="/dashboard">Dashboard</Link>
     </div>
   );
 }

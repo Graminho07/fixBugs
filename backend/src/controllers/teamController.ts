@@ -1,0 +1,114 @@
+import Team from "../models/Team";
+import User from "../models/User";
+
+export const generateTeamId = async (): Promise<number> => {
+  let teamId: number = 0;
+  let exists = true;
+  while (exists) {
+    teamId = Math.floor(1000 + Math.random() * 9000);
+    const existing = await Team.findOne({ teamId });
+    if (!existing) exists = false;
+  }
+  return teamId;
+};
+
+export const createTeam = async (req: any, res: any) => {
+  const { name, description, members } = req.body;
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Apenas administradores podem criar equipes" });
+  }
+
+  try {
+    const teamId = await generateTeamId();
+
+    const emailList: string[] = members
+      ? members.split(",").map((email: string) => email.trim().toLowerCase())
+      : [];
+
+    const users = await User.find({ email: { $in: emailList } });
+
+    if (users.length !== emailList.length) {
+      const foundEmails = users.map((u) => u.email);
+      const notFound = emailList.filter((email) => !foundEmails.includes(email));
+      return res.status(400).json({
+        message: `Os seguintes membros não foram encontrados: ${notFound.join(", ")}`,
+      });
+    }
+
+    const memberIds = users.map((user) => user._id);
+
+    const newTeam = await Team.create({
+      teamId,
+      name,
+      description,
+      members: memberIds,
+    });
+
+    res.status(201).json(newTeam);
+  } catch (err: any) {
+    console.error("Erro ao criar equipe:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getTeamById = async (req: any, res: any) => {
+    const { teamId } = req.params;
+    try {
+        const team = await Team.findOne({ teamId: Number(teamId) })
+        .populate("members", "name email");
+        if (!team) {
+            return res.status(404).json({ message: "Equipe não encontrada" });
+        }
+        res.json(team);
+    } catch (err) {
+        res.status(500).json({ message: "Erro ao buscar equipe" });
+    }
+};
+
+export const updateTeam = async (req: any, res: any) => {
+  const { teamId } = req.params;
+  const { name, description, members } = req.body;
+
+  try {
+    const updatedTeam = await Team.findOneAndUpdate(
+      { teamId: Number(teamId) },
+      { name, description, members },
+      { new: true }
+    );
+
+    if (!updatedTeam) {
+      return res.status(404).json({ error: "Equipe não encontrada" });
+    }
+    
+    res.status(200).json(updatedTeam);
+  } catch (err: any) {
+    console.error("Erro ao atualizar equipe: ", err)
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getAllTeams = async (req: any, res: any) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Apenas administradores podem ver as equipes" });
+  }
+
+  try {
+    const teams = await Team.find()
+      .populate("members", "name email")
+      .sort({ createdAt: -1 });
+
+    res.json(teams);
+  } catch (err: any) {
+    console.error("Erro ao buscar equipes:", err);
+    res.status(500).json({ message: "Erro ao buscar equipes" });
+  }
+};
+
+export default{
+    generateTeamId,
+    createTeam,
+    getTeamById,
+    updateTeam,
+    getAllTeams
+}

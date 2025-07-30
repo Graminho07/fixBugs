@@ -6,6 +6,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import userRoutes from './routes/user.routes'
 import bugRoutes from './routes/bug.routes'
+import teamRoutes from './routes/team.routes'
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 
 app.use('/', userRoutes)
 app.use('/', bugRoutes)
+app.use('/', teamRoutes)
 
 console.log('🔍 URI Mongo:', process.env.MONGO_URI)
 

@@ -33,7 +33,7 @@ export const createBug = async (req: any, res: any) => {
   }
 };
 
-export const getBug = async (req: any, res: any) => {
+export const getBugById = async (req: any, res: any) => {
   const { bugId } = req.params;
   try {
     const bug = await Bug.findOne({ bugId: Number(bugId) });
@@ -51,16 +51,19 @@ export const updateBug = async (req: any, res: any) => {
   const { title, description, status, priority, assignedTo } = req.body;
 
   try {
-    const updatedBug = await Bug.findByIdAndUpdate(
-      bugId,
+    const updatedBug = await Bug.findOneAndUpdate(
+      { bugId: Number(bugId) },
       { title, description, status, priority, assignedTo },
       { new: true }
-    ).populate("assignedTo", "name email");
+    );
+
     if (!updatedBug) {
-      return res.status(404).json({ error: "Bug not found" });
+      return res.status(404).json({ error: "Bug não encontrado" });
     }
+
     res.status(200).json(updatedBug);
   } catch (err: any) {
+    console.error("Erro ao atualizar bug:", err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -81,7 +84,7 @@ export const deleteBug = async (req: any, res: any) => {
 export default {
   generateBugId,
   createBug,
-  getBug,
+  getBugById,
   updateBug,
   deleteBug,
 };
