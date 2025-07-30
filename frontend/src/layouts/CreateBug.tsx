@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { getUserRole } from "./../utils/auth"; 
 
 export default function CreateBug() {
+  const role = getUserRole();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -80,6 +82,9 @@ export default function CreateBug() {
         <option value="medium">Média</option>
         <option value="high">Alta</option>
       </select>
+      {role === "admin" && (
+        <button>Atribuir a uma equipe</button>
+      )}
       <input
         type="text"
         name="assignedTo"

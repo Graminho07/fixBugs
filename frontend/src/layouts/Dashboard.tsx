@@ -32,7 +32,7 @@ export default function Dashboard() {
           </button>
         </Link>
       )}
- 
+
       {role === "admin" && (
         <Link to="/teams">
           <button style={{ margin: "1rem 0", padding: "0.5rem 1rem" }}>

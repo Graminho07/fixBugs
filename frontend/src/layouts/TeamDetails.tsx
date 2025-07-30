@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 type Member = {
     name: string;
@@ -52,6 +53,10 @@ export default function TeamDetails() {
       <p><strong>Nome:</strong> {team.name}</p>
       <p><strong>Descrição:</strong> {team.description}</p>
       <p><strong>Membros:</strong> {team.members.length > 0 ? team.members.map((m) => m.name).join(", ") : "Nenhum membro"}</p>
+
+      <Link to="/dashboard">Voltar ao Dashboard</Link>
+      <br />
+      <Link to="/teams">Voltar às minhas equipes</Link>
     </div>
   );
 }

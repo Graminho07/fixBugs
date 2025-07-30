@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
+type Member = {
+  id: string;
+  name: string;
+};
 
 type Team = {
   teamId: string;
   name: string;
-  members: string[];
+  members: Member[];
 };
 
 export default function Teams() {
@@ -48,19 +53,25 @@ export default function Teams() {
 
   return (
     <div>
-      <h2>Equipes Criadas</h2>
+      <h2>Minhas Equipes</h2>
       {teams.length === 0 ? (
         <p>Nenhuma equipe encontrada.</p>
       ) : (
         <ul>
           {teams.map((team) => (
             <li key={team.teamId}>
-              <strong>{team.name}</strong> — Membros:{" "}
-              {team.members?.join(", ") || "Nenhum membro"}
+              <strong>
+                <Link to={`/team/${team.teamId}`}>{team.name}</Link>
+              </strong>{" "}
+              (ID: {team.teamId}) — Membros:{" "}
+              {Array.isArray(team.members) && team.members.length > 0
+                ? team.members.map((member) => member.name).join(", ")
+                : "Nenhum membro"}
             </li>
           ))}
         </ul>
       )}
+      <Link to="/dashboard">Voltar ao Dashboard</Link>
     </div>
   );
 }
