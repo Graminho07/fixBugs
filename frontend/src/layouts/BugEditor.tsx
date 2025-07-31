@@ -1,6 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getUserRole } from "./../utils/auth"; 
+
+type Team = {
+  teamId: number;
+  name: string;
+};
 
 type Bug = {
     bugId: number;
@@ -8,7 +14,8 @@ type Bug = {
     description: string;
     status: "open" | "in-progress" | "resolved" | "closed";
     priority: "low" | "medium" | "high";
-    assignedTo?: string;
+    assignedToUser?: string;
+    assignedToTeam?: string,
     createdAt: string;
     updatedAt: string;
 };
@@ -19,12 +26,15 @@ export default function BugEditor() {
         description: "",
         status: "open",
         priority: "medium",
-        assignedTo: "",
+        assignedToUser: "",
+        assignedToTeam: "",
     });
 
+    const role = getUserRole();
     const navigate = useNavigate();
     const { bugId } = useParams();
     const [bug, setBug] = useState<Bug | null>(null);
+    const [teams, setTeams] = useState<Team[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -40,9 +50,12 @@ export default function BugEditor() {
         e.preventDefault();
         try {
             const res = await fetch(`http://localhost:5000/bug/${bugId}/edit`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(form),
             });
 
             if (!res.ok) {
@@ -59,6 +72,16 @@ export default function BugEditor() {
             alert("❌ Erro: " + message);
         }
     };
+
+    useEffect(() => {
+    if (role === "admin") {
+        fetch("http://localhost:5000/teams", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
+        .then((res) => res.json())
+        .then((data) => setTeams(data));
+    }
+    }, [role]);
 
     useEffect(() => {
         const fetchBug = async () => {
@@ -121,11 +144,21 @@ export default function BugEditor() {
                 </select>
                 <input
                     type="text"
-                    name="assignedTo"
+                    name="assignedToUser"
                     placeholder="Para:"
-                    value={form.assignedTo}
+                    value={form.assignedToUser}
                     onChange={handleChange}
                 />
+                {role === "admin" && (
+                <select name="assignedTeamId" value={form.assignedToTeam} onChange={handleChange}>
+                    <option value="">-- Atribuir a uma equipe --</option>
+                    {teams.map((team) => (
+                    <option key={team.teamId} value={team.teamId}>
+                        {team.name}
+                    </option>
+                    ))}
+                </select>
+                )}
                 <button type="submit">Atualizar Bug</button>
                 <Link to="/dashboard">Voltar ao Dashboard</Link>
             </form>

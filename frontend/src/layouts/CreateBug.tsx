@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { getUserRole } from "./../utils/auth"; 
+
+type Team = {
+  teamId: number;
+  name: string;
+};
 
 export default function CreateBug() {
   const role = getUserRole();
@@ -11,7 +16,8 @@ export default function CreateBug() {
     description: "",
     status: "open",
     priority: "medium",
-    assignedTo: "",
+    assignedToUser: "",
+    assignedToTeam: "",
   });
 
   const handleChange = (
@@ -22,13 +28,29 @@ export default function CreateBug() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const [teams, setTeams] = useState<Team[]>([]);
+
+  useEffect(() => {
+  if (role === "admin") {
+    fetch("http://localhost:5000/teams", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setTeams(data));
+  }
+  }, [role]);
+
+
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   try {
     const res = await fetch("http://localhost:5000/createBug", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify(form),
     });
 
     if (!res.ok) {
@@ -83,13 +105,20 @@ export default function CreateBug() {
         <option value="high">Alta</option>
       </select>
       {role === "admin" && (
-        <button>Atribuir a uma equipe</button>
+      <select name="assignedTeamId" value={form.assignedToTeam} onChange={handleChange}>
+        <option value="">-- Atribuir a uma equipe --</option>
+        {teams.map((team) => (
+          <option key={team.teamId} value={team.teamId}>
+            {team.name}
+          </option>
+        ))}
+      </select>
       )}
       <input
         type="text"
-        name="assignedTo"
+        name="assignedToUser"
         placeholder="Para:"
-        value={form.assignedTo}
+        value={form.assignedToUser}
         onChange={handleChange}
       />
       <button type="submit">Criar Bug</button>

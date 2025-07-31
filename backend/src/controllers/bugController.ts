@@ -1,4 +1,5 @@
 import Bug from "../models/Bug";
+import Team from "../models/Team"
 
 export const generateBugId = async (): Promise<number> => {
   let bugId: number = 0;
@@ -13,17 +14,27 @@ export const generateBugId = async (): Promise<number> => {
 };
 
 export const createBug = async (req: any, res: any) => {
-  const { title, description, priority, assignedTo } = req.body;
+  const { title, description, priority, assignedToUser, assignedToTeam } = req.body;
 
   try {
     const bugId = await generateBugId();
+
+    let team = null;
+
+    if (assignedToTeam && req.user.role === "admin") {
+      team = await Team.findOne({ teamId: Number(assignedToTeam) });
+      if (!team) {
+        return res.status(404).json({ message: "Equipe não encontrada" });
+      }
+    }
 
     const newBug = await Bug.create({
       bugId,
       title,
       description,
       priority,
-      assignedTo: assignedTo || undefined,
+      assignedToUser: assignedToUser || undefined,
+      assignedTeamId: team ? team._id : undefined,
     });
 
     res.status(201).json(newBug);
@@ -48,12 +59,22 @@ export const getBugById = async (req: any, res: any) => {
 
 export const updateBug = async (req: any, res: any) => {
   const { bugId } = req.params;
-  const { title, description, status, priority, assignedTo } = req.body;
+  const { title, description, status, priority, assignedToUser, assignedToTeam } = req.body;
 
   try {
+    let update: any = { title, description, status, priority, assignedToUser };
+
+    if (req.user.role === "admin" && assignedToTeam) {
+      const team = await Team.findOne({ teamId: Number(assignedToTeam) });
+      if (!team) {
+        return res.status(404).json({ error: "Equipe não encontrada" });
+      }
+      update.assignedTeamId = team._id;
+    }
+
     const updatedBug = await Bug.findOneAndUpdate(
       { bugId: Number(bugId) },
-      { title, description, status, priority, assignedTo },
+      update,
       { new: true }
     );
 
