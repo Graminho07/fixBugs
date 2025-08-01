@@ -9,7 +9,7 @@ type Bug = {
   status: "open" | "in-progress" | "resolved" | "closed";
   priority: "low" | "medium" | "high";
   assignedToUser?: string;
-  assignedToTeam: string,
+  assignedToTeam: { _id: string; name: string } | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -53,7 +53,10 @@ export default function BugDetails() {
       <p><strong>Status:</strong> {bug.status}</p>
       <p><strong>Prioridade:</strong> {bug.priority}</p>
       <p><strong>Atribuído a:</strong> {bug.assignedToUser || "Ninguém"}</p>
-      <p><strong>Atribuído a equipe:</strong> {bug.assignedToTeam || "Nenhuma"}</p>
+      <p>
+        <strong>Atribuído à equipe:</strong>{" "}
+        {bug.assignedToTeam ? bug.assignedToTeam.name : "Nenhuma"}
+      </p>
 
       <Link to={`/bug/${bug.bugId}/edit`}>
         <button style={{ margin: "1rem 0", padding: "0.5rem 1rem" }}>

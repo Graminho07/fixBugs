@@ -16,7 +16,7 @@ const bugSchema = new mongoose.Schema(
       default: "medium",
     },
     assignedToUser: { type: String, default: "" },
-    assignedToTeam: { type: String, default: "" },
+    assignedToTeam: { type: mongoose.Schema.Types.ObjectId, ref: "Team", default: null },
   },
   { timestamps: true }
 );

@@ -34,7 +34,7 @@ export const createBug = async (req: any, res: any) => {
       description,
       priority,
       assignedToUser: assignedToUser || undefined,
-      assignedTeamId: team ? team._id : undefined,
+      assignedToTeam: team ? team._id : undefined,
     });
 
     res.status(201).json(newBug);
@@ -47,10 +47,14 @@ export const createBug = async (req: any, res: any) => {
 export const getBugById = async (req: any, res: any) => {
   const { bugId } = req.params;
   try {
-    const bug = await Bug.findOne({ bugId: Number(bugId) });
+    const bug = await Bug.findOne({ bugId: Number(bugId) })
+      .populate("assignedToTeam", "name")
+      .exec();
+
     if (!bug) {
       return res.status(404).json({ message: "Bug não encontrado" });
     }
+
     res.json(bug);
   } catch (err) {
     res.status(500).json({ message: "Erro ao buscar bug" });
@@ -69,7 +73,7 @@ export const updateBug = async (req: any, res: any) => {
       if (!team) {
         return res.status(404).json({ error: "Equipe não encontrada" });
       }
-      update.assignedTeamId = team._id;
+      update.assignedToTeam = team._id;
     }
 
     const updatedBug = await Bug.findOneAndUpdate(

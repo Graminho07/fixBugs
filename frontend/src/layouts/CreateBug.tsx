@@ -105,7 +105,7 @@ export default function CreateBug() {
         <option value="high">Alta</option>
       </select>
       {role === "admin" && (
-      <select name="assignedTeamId" value={form.assignedToTeam} onChange={handleChange}>
+      <select name="assignedToTeam" value={form.assignedToTeam} onChange={handleChange}>
         <option value="">-- Atribuir a uma equipe --</option>
         {teams.map((team) => (
           <option key={team.teamId} value={team.teamId}>
