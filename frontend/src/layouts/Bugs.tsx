@@ -37,6 +37,24 @@ export default function Bugs() {
     return (
         <div>
             <h2>Meus Bugs</h2>
+            {bugs.length === 0 ? (
+                <p>Nenhum bug encontrado.</p>
+            ): (
+                <ul>
+                    {bugs.map((bugs) => (
+                        <li key={bugs.bugId}>
+                            <strong>
+                                <Link to={`/bug/${bugs.bugId}`}>{bugs.name}</Link>
+                            </strong> {" "}
+                            (ID: {bugs.bugId}) - Status: {" "}
+                            {Array.isArray(bug.status) && bugs.status.length > 0
+                                ? bugs.status.map((status) => status.name).join(", ")
+                                : "Aberto"}
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <Link to="/dashboard">Voltar ao Dashboard</Link>
         </div>
     )
 }
