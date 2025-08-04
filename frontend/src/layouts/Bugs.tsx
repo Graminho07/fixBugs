@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 type Bug = {
     title: string;
-    bugId: string;
+    bugId: number;
     status: "open" | "in-progress" | "resolved" | "closed";
 }
 
@@ -46,7 +46,7 @@ export default function Bugs() {
                     <strong>
                         <Link to={`/bug/${bug.bugId}`}>{bug.title}</Link>
                     </strong>{" "}
-                    (ID: {bug.bugId}) — Status: {(bug.status)}
+                    (ID: {bug.bugId}) - Status: {bug.status}
                     </li>
                 ))}
                 </ul>

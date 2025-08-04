@@ -20,7 +20,7 @@ export default function BugDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await fetch(`http://localhost:5000/deleteBug/${bugId}`, {
@@ -86,13 +86,10 @@ export default function BugDetails() {
           ✏️ Editar Bug
         </button>
       </Link>
-      <form onSubmit={handleSubmit}>
-        <button onSubmit={handleSubmit} type="submit" style={{ backgroundColor: "red", color: "white" }}>
+      <br />
+        <button onClick={handleDelete} style={{ backgroundColor: "red", color: "white" }}>
           🗑️ Deletar Bug
         </button>
-      </form>
-      <br></br>
-      <Link to="/createBug">Criar bug</Link>
       <br></br>
       <Link to="/dashboard">Dashboard</Link>
     </div>

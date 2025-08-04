@@ -6,6 +6,7 @@ const teamSchema = new mongoose.Schema(
     name: { type: String, required: true },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     description: { type: String, required: false },
+    bugs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bug" }],
   },
   { timestamps: true }
 );

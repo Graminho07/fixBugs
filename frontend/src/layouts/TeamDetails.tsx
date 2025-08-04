@@ -2,9 +2,13 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+type Bug = {
+  bugId: string;
+}
+
 type Member = {
-    name: string;
-    email: string;
+  name: string;
+  email: string;
 };
 
 type Team = {
@@ -12,6 +16,7 @@ type Team = {
   name: string;
   description: string;
   members: Member[];
+  bugs: Bug[];
   createdAt: string;
   updatedAt: string;
 };
@@ -21,6 +26,29 @@ export default function TeamDetails() {
   const [team, setTeam] = useState<Team | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const handleDelete = async () => {
+    if (!teamId) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/deleteTeam/${teamId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Erro ao deletar equipe");
+      }
+      alert("Equipe deletada com sucesso!");
+      window.location.href = "/teams";
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Erro desconhecido");
+    }
+  };
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -53,8 +81,13 @@ export default function TeamDetails() {
       <p><strong>Nome:</strong> {team.name}</p>
       <p><strong>Descrição:</strong> {team.description}</p>
       <p><strong>Membros:</strong> {team.members.length > 0 ? team.members.map((m) => m.name).join(", ") : "Nenhum membro"}</p>
+      <p><strong>Bugs:</strong> {team.bugs.length > 0 ? team.bugs.map((m) => m.bugId).join(", "): "Nenhum bug"}</p>
 
       <Link to={`/team/${team.teamId}/edit`}><button>Editar equipe</button></Link>
+      <br />
+      <button onClick={handleDelete} style={{ backgroundColor: "red", color: "white" }}>
+        🗑️ Deletar Equipe
+      </button>
       <br />
       <Link to="/dashboard">Voltar ao Dashboard</Link>
       <br />

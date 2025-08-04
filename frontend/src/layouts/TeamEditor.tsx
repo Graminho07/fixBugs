@@ -2,6 +2,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+type Bug = {
+    bugId: string;
+};
+
 type Member = {
     email: string;
 };
@@ -11,6 +15,7 @@ type Team = {
   name: string;
   description: string;
   members: Member[];
+  bugs: Bug[];
   createdAt: string;
   updatedAt: string;
 };
@@ -20,6 +25,7 @@ export default function TeamEditor() {
         name: "",
         description: "",
         members: [],
+        bugs: []
     });
 
     const navigate = useNavigate();
@@ -108,6 +114,13 @@ export default function TeamEditor() {
                 name="members"
                 placeholder="Novos Membros"
                 value={form.members}
+                onChange={handleChange}
+            />
+            <input
+                type="text"
+                name="bug"
+                placeholder="Novos bugs"
+                value={form.bugs}
                 onChange={handleChange}
             />
             <button type="submit">Atualizar equipe</button>

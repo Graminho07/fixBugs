@@ -1,5 +1,6 @@
 import Team from "../models/Team";
 import User from "../models/User";
+import Bug from "../models/Bug";
 
 export const generateTeamId = async (): Promise<number> => {
   let teamId: number = 0;
@@ -13,7 +14,20 @@ export const generateTeamId = async (): Promise<number> => {
 };
 
 export const createTeam = async (req: any, res: any) => {
-  const { name, description, members } = req.body;
+  const { name, description, members, bugs } = req.body;
+
+  const bugIdList: (string | number)[] = Array.isArray(bugs)
+    ? bugs
+    : typeof bugs === "string"
+    ? bugs.split(",").map((id: string) => id.trim())
+    : [];
+
+  const foundBugs = await Bug.find({ bugId: { $in: bugIdList } });
+
+  if (foundBugs.length !== bugIdList.length) {
+    const foundBugIds = foundBugs.map((b: any) => String(b.bugId));
+    const notFound = bugIdList.filter((bugId: any) => !foundBugIds.includes(String(bugId)));
+
 
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "Apenas administradores podem criar equipes" });
@@ -28,6 +42,8 @@ export const createTeam = async (req: any, res: any) => {
 
     const users = await User.find({ email: { $in: emailList } });
 
+    const foundBugs = await Bug.find({ bugId: { $in: bugs} });
+
     if (users.length !== emailList.length) {
       const foundEmails = users.map((u) => u.email);
       const notFound = emailList.filter((email) => !foundEmails.includes(email));
@@ -36,21 +52,32 @@ export const createTeam = async (req: any, res: any) => {
       });
     }
 
-    const memberIds = users.map((user) => user._id);
+    if (foundBugs.length !== bugs.length) {
+      const foundBugIds = foundBugs.map((b: any) => b.bugId);
+      const notFound = bugs.filter((bugId: any) => !foundBugIds.includes(bugId));
+      return res.status(400).json({
+        message: `Os seguintes bugs não foram encontrados: ${notFound.join(", ")}`,
+      });
+    }
+
+    const bugIds = foundBugs.map((bug: any) => bug._id);
+    const memberIds = users.map((user: any) => user._id);
 
     const newTeam = await Team.create({
       teamId,
       name,
       description,
       members: memberIds,
+      bugs: bugIds
     });
 
     res.status(201).json(newTeam);
   } catch (err: any) {
     console.error("Erro ao criar equipe:", err);
     res.status(500).json({ error: err.message });
-  }
-};
+    }
+  };
+}
 
 export const getTeamById = async (req: any, res: any) => {
     const { teamId } = req.params;
@@ -68,12 +95,12 @@ export const getTeamById = async (req: any, res: any) => {
 
 export const updateTeam = async (req: any, res: any) => {
   const { teamId } = req.params;
-  const { name, description, members } = req.body;
+  const { name, description, members, bugs } = req.body;
 
   try {
     const emailList: string[] = Array.isArray(members)
       ? members.map((email: string) => email.trim().toLowerCase())
-      : members
+      : typeof members === "string"
       ? members.split(",").map((email: string) => email.trim().toLowerCase())
       : [];
 
@@ -89,12 +116,31 @@ export const updateTeam = async (req: any, res: any) => {
 
     const memberIds = users.map((user) => user._id);
 
+    const bugIdList: (string | number)[] = Array.isArray(bugs)
+      ? bugs
+      : typeof bugs === "string"
+      ? bugs.split(",").map((id: string) => id.trim())
+      : [];
+
+    const bugDocs = await Bug.find({ bugId: { $in: bugIdList } });
+
+    if (bugDocs.length !== bugIdList.length) {
+      const foundBugIds = bugDocs.map((b) => String(b.bugId));
+      const notFound = bugIdList.filter((id) => !foundBugIds.includes(String(id)));
+      return res.status(400).json({
+        message: `Os seguintes bugs não foram encontrados: ${notFound.join(", ")}`,
+      });
+    }
+
+    const bugObjectIds = bugDocs.map((bug) => bug._id);
+
     const updatedTeam = await Team.findOneAndUpdate(
       { teamId: Number(teamId) },
       {
         name,
         description,
         members: memberIds,
+        bugs: bugObjectIds,
       },
       { new: true }
     );
@@ -105,10 +151,24 @@ export const updateTeam = async (req: any, res: any) => {
 
     res.status(200).json(updatedTeam);
   } catch (err: any) {
-    console.error("Erro ao atualizar equipe: ", err);
+    console.error("Erro ao atualizar equipe:", err);
     res.status(500).json({ error: err.message });
   }
 };
+
+export const deleteTeam = async (req: any, res: any) => {
+  const { teamId } = req.params;
+
+  try {
+    const deletedTeam = await Team.findOneAndDelete({ teamId: Number(teamId) });
+    if (!deletedTeam) return res.status(404).json({ error: "Equipe não encontrada" });
+
+    res.status(200).json({ message: "Equipe deletada com sucesso" });
+  } catch (err: any) {
+    console.error("Erro ao deletar equipe:", err);
+    res.status(500).json({ error: err.message });
+  }
+}
 
 export const getAllTeams = async (req: any, res: any) => {
   if (req.user.role !== "admin") {
@@ -127,10 +187,10 @@ export const getAllTeams = async (req: any, res: any) => {
   }
 };
 
-export default{
-    generateTeamId,
-    createTeam,
-    getTeamById,
-    updateTeam,
-    getAllTeams
-}
+export default {
+  createTeam,
+  getTeamById,
+  updateTeam,
+  deleteTeam,
+  getAllTeams
+};

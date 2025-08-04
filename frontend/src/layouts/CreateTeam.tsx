@@ -8,6 +8,7 @@ export default function CreateTeam() {
         name: "",
         description: "",
         members: "",
+        bugs: ""
     });
 
     const handleChange = (
@@ -71,8 +72,15 @@ export default function CreateTeam() {
             <input
                 type="text"
                 name="members"
-                placeholder="Membros (separados por vírgula)"
+                placeholder="Membros (separados por ,)"
                 value={form.members}
+                onChange={handleChange}
+            />
+            <input
+                type="text"
+                name="bugs"
+                placeholder="Bugs (opcional)"
+                value={form.bugs}
                 onChange={handleChange}
             />
             <button type="submit">Criar Equipe</button>
