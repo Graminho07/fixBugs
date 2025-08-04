@@ -94,15 +94,30 @@ export const updateBug = async (req: any, res: any) => {
 };
 
 export const deleteBug = async (req: any, res: any) => {
-  const { id } = req.params;
+  const { bugId } = req.params;
 
   try {
-    const deletedBug = await Bug.findByIdAndDelete(id);
-    if (!deletedBug) return res.status(404).json({ error: "Bug not found" });
+    const deletedBug = await Bug.findOneAndDelete({ bugId: Number(bugId) });
+    if (!deletedBug) return res.status(404).json({ error: "Bug não encontrado" });
 
-    res.status(200).json({ message: "Bug deleted successfully" });
+    res.status(200).json({ message: "Bug deletado com sucesso" });
   } catch (err: any) {
+    console.error("Erro ao deletar bug:", err);
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const getAllBugs = async (req: any, res: any) => {
+  try {
+    const bugs = await Bug.find()
+      .populate("assignedToTeam", "name")
+      .populate("assignedToUser", "name email")
+      .exec();
+
+    res.json(bugs);
+  } catch (err) {
+    console.error("Erro ao buscar bugs:", err);
+    res.status(500).json({ message: "Erro ao buscar bugs" });
   }
 };
 
@@ -112,4 +127,5 @@ export default {
   getBugById,
   updateBug,
   deleteBug,
+  getAllBugs
 };

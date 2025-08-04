@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 type Bug = {
+    title: string;
     bugId: string;
-    name: string;
     status: "open" | "in-progress" | "resolved" | "closed";
 }
 
@@ -41,17 +41,14 @@ export default function Bugs() {
                 <p>Nenhum bug encontrado.</p>
             ): (
                 <ul>
-                    {bugs.map((bugs) => (
-                        <li key={bugs.bugId}>
-                            <strong>
-                                <Link to={`/bug/${bugs.bugId}`}>{bugs.name}</Link>
-                            </strong> {" "}
-                            (ID: {bugs.bugId}) - Status: {" "}
-                            {Array.isArray(bugs.status) && bugs.status.length > 0
-                                ? bugs.status.map((status) => status.name).join(", ")
-                                : "Aberto"}
-                        </li>
-                    ))}
+                {bugs.map((bug) => (
+                    <li key={bug.bugId}>
+                    <strong>
+                        <Link to={`/bug/${bug.bugId}`}>{bug.title}</Link>
+                    </strong>{" "}
+                    (ID: {bug.bugId}) — Status: {(bug.status)}
+                    </li>
+                ))}
                 </ul>
             )}
             <Link to="/dashboard">Voltar ao Dashboard</Link>

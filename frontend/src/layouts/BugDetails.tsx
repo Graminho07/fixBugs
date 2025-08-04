@@ -20,6 +20,29 @@ export default function BugDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`http://localhost:5000/deleteBug/${bugId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ id: bugId }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Erro ao deletar bug");
+      }
+      alert("Bug deletado com sucesso!");
+      window.location.href = "/bugs";
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Erro desconhecido");
+    }
+  };
+
   useEffect(() => {
     const fetchBug = async () => {
       try {
@@ -63,6 +86,11 @@ export default function BugDetails() {
           ✏️ Editar Bug
         </button>
       </Link>
+      <form onSubmit={handleSubmit}>
+        <button onSubmit={handleSubmit} type="submit" style={{ backgroundColor: "red", color: "white" }}>
+          🗑️ Deletar Bug
+        </button>
+      </form>
       <br></br>
       <Link to="/createBug">Criar bug</Link>
       <br></br>
