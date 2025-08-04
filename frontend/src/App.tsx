@@ -6,6 +6,7 @@ import CreateBug from "./layouts/CreateBug";
 import PrivateRoute from "./routes/PrivateRoute";
 import BugDetails from "./layouts/BugDetails";
 import BugEditor from "./layouts/BugEditor";
+import Bugs from "./layouts/Bugs";
 import CreateTeam from "./layouts/CreateTeam";
 import TeamDetails from "./layouts/TeamDetails";
 import TeamEditor from "./layouts/TeamEditor";
@@ -21,6 +22,7 @@ function App() {
         <Route path="/createBug" element={<PrivateRoute> <CreateBug/> </PrivateRoute>} />
         <Route path="/bug/:bugId" element={<PrivateRoute> <BugDetails/> </PrivateRoute>} />
         <Route path="/bug/:bugId/edit" element={<PrivateRoute> <BugEditor/> </PrivateRoute>} />
+        <Route path="/bugs" element={<PrivateRoute> <Bugs/> </PrivateRoute>} />
         <Route path="/createTeam" element={<PrivateRoute> <CreateTeam/> </PrivateRoute>} />
         <Route path="/team/:teamId" element={<PrivateRoute> <TeamDetails/> </PrivateRoute>} />
         <Route path="/team/:teamId/edit" element={<PrivateRoute> <TeamEditor/> </PrivateRoute>} />

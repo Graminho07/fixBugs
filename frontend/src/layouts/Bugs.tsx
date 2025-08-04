@@ -47,7 +47,7 @@ export default function Bugs() {
                                 <Link to={`/bug/${bugs.bugId}`}>{bugs.name}</Link>
                             </strong> {" "}
                             (ID: {bugs.bugId}) - Status: {" "}
-                            {Array.isArray(bug.status) && bugs.status.length > 0
+                            {Array.isArray(bugs.status) && bugs.status.length > 0
                                 ? bugs.status.map((status) => status.name).join(", ")
                                 : "Aberto"}
                         </li>
