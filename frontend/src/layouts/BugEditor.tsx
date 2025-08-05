@@ -14,7 +14,7 @@ type Bug = {
     description: string;
     status: "open" | "in-progress" | "resolved" | "closed";
     priority: "low" | "medium" | "high";
-    assignedToUser?: string;
+    assignedToUser?: { email: string };
     assignedToTeam?: string,
     createdAt: string;
     updatedAt: string;

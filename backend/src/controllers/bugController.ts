@@ -1,5 +1,6 @@
 import Bug from "../models/Bug";
 import Team from "../models/Team"
+import User from "../models/User";
 
 export const generateBugId = async (): Promise<number> => {
   let bugId: number = 0;
@@ -20,6 +21,14 @@ export const createBug = async (req: any, res: any) => {
     const bugId = await generateBugId();
 
     let team = null;
+    let user = null;
+
+    if (assignedToUser) {
+      user = await User.findOne({ email: assignedToUser });
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+    }
 
     if (assignedToTeam && req.user.role === "admin") {
       team = await Team.findOne({ teamId: Number(assignedToTeam) });
@@ -33,7 +42,7 @@ export const createBug = async (req: any, res: any) => {
       title,
       description,
       priority,
-      assignedToUser: assignedToUser || undefined,
+      assignedToUser: user ? user._id : undefined,
       assignedToTeam: team ? team._id : undefined,
     });
 
@@ -49,6 +58,7 @@ export const getBugById = async (req: any, res: any) => {
   try {
     const bug = await Bug.findOne({ bugId: Number(bugId) })
       .populate("assignedToTeam", "name")
+      .populate("assignedToUser", "name email")
       .exec();
 
     if (!bug) {
@@ -74,6 +84,16 @@ export const updateBug = async (req: any, res: any) => {
         return res.status(404).json({ error: "Equipe não encontrada" });
       }
       update.assignedToTeam = team._id;
+    }
+
+    let user = null;
+
+    if (assignedToUser) {
+      user = await User.findOne({ email: assignedToUser });
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+      update.assignedToUser = user._id;
     }
 
     const updatedBug = await Bug.findOneAndUpdate(
