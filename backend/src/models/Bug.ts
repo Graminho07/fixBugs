@@ -15,7 +15,7 @@ const bugSchema = new mongoose.Schema(
       enum: ["low", "medium", "high"],
       default: "medium",
     },
-    assignedToUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    assignedToUser: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: null }],
     assignedToTeam: { type: mongoose.Schema.Types.ObjectId, ref: "Team", default: null },
   },
   { timestamps: true }

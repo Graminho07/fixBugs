@@ -14,8 +14,8 @@ type Bug = {
     description: string;
     status: "open" | "in-progress" | "resolved" | "closed";
     priority: "low" | "medium" | "high";
-    assignedToUser?: { email: string };
-    assignedToTeam?: string,
+    assignedToUser?: [{ email: string }] | null;
+    assignedToTeam?: { name: string} | null;
     createdAt: string;
     updatedAt: string;
 };
@@ -26,7 +26,7 @@ export default function BugEditor() {
         description: "",
         status: "open",
         priority: "medium",
-        assignedToUser: "",
+        assignedToUser: [""],
         assignedToTeam: "",
     });
 
