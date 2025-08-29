@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
-type Bug = {
-    title: string;
-    bugId: number;
-    status: "open" | "in-progress" | "resolved" | "closed";
-}
+import type { Bug } from "../types/Bug";
 
 export default function Bugs() {
     const [bugs, setBugs] = useState<Bug[]>([]);

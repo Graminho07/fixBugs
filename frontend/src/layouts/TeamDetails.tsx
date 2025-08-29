@@ -1,25 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-type Bug = {
-  bugId: string;
-}
-
-type Member = {
-  name: string;
-  email: string;
-};
-
-type Team = {
-  teamId: number;
-  name: string;
-  description: string;
-  members: Member[];
-  bugs: Bug[];
-  createdAt: string;
-  updatedAt: string;
-};
+import type { Team } from "../types/Team";
 
 export default function TeamDetails() {
   const { teamId } = useParams();
@@ -81,7 +63,7 @@ export default function TeamDetails() {
       <p><strong>Nome:</strong> {team.name}</p>
       <p><strong>Descrição:</strong> {team.description}</p>
       <p><strong>Membros:</strong> {team.members.length > 0 ? team.members.map((m) => m.name).join(", ") : "Nenhum membro"}</p>
-      <p><strong>Bugs:</strong> {team.bugs.length > 0 ? team.bugs.map((m) => m.bugId).join(", "): "Nenhum bug"}</p>
+      <p><strong>Bugs:</strong> {team.assignedBugs.length > 0 ? team.assignedBugs.map((m) => m.bugId).join(", "): "Nenhum bug"}</p>
 
       <Link to={`/team/${team.teamId}/edit`}><button>Editar equipe</button></Link>
       <br />

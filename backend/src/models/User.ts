@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
       enum: ["developer", "admin", "tester"],
       required: true,
     },
-    bugs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bug" }],
+    assignedBugs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bug" }],
     teams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }],
   },
   { timestamps: true }

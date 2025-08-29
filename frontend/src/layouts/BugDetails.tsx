@@ -1,18 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-type Bug = {
-  bugId: number;
-  title: string;
-  description: string;
-  status: "open" | "in-progress" | "resolved" | "closed";
-  priority: "low" | "medium" | "high";
-  assignedToUser?: { email: string } | null;
-  assignedToTeam: { _id: string; name: string } | null;
-  createdAt: string;
-  updatedAt: string;
-};
+import type { Bug } from "../types/Bug";
 
 export default function BugDetails() {
   const { bugId } = useParams();

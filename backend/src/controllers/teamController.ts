@@ -14,12 +14,12 @@ export const generateTeamId = async (): Promise<number> => {
 };
 
 export const createTeam = async (req: any, res: any) => {
-  const { name, description, members, bugs } = req.body;
+  const { name, description, members, assignedBugs } = req.body;
 
-  const bugIdList: (string | number)[] = Array.isArray(bugs)
-    ? bugs
-    : typeof bugs === "string"
-    ? bugs.split(",").map((id: string) => id.trim())
+  const bugIdList: (string | number)[] = Array.isArray(assignedBugs)
+    ? assignedBugs
+    : typeof assignedBugs === "string"
+    ? assignedBugs.split(",").map((id: string) => id.trim())
     : [];
 
   const foundBugs = await Bug.find({ bugId: { $in: bugIdList } });
@@ -42,7 +42,7 @@ export const createTeam = async (req: any, res: any) => {
 
     const users = await User.find({ email: { $in: emailList } });
 
-    const foundBugs = await Bug.find({ bugId: { $in: bugs} });
+    const foundBugs = await Bug.find({ bugId: { $in: assignedBugs} });
 
     if (users.length !== emailList.length) {
       const foundEmails = users.map((u) => u.email);
@@ -52,9 +52,9 @@ export const createTeam = async (req: any, res: any) => {
       });
     }
 
-    if (foundBugs.length !== bugs.length) {
+    if (foundBugs.length !== assignedBugs.length) {
       const foundBugIds = foundBugs.map((b: any) => b.bugId);
-      const notFound = bugs.filter((bugId: any) => !foundBugIds.includes(bugId));
+      const notFound = assignedBugs.filter((bugId: any) => !foundBugIds.includes(bugId));
       return res.status(400).json({
         message: `Os seguintes bugs não foram encontrados: ${notFound.join(", ")}`,
       });

@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { getUserRole } from "./../utils/auth"; 
-
-type Team = {
-  teamId: number;
-  name: string;
-};
+import { getUserRole } from "./../utils/auth";
+import type { Team } from "../types/Team";
 
 export default function CreateBug() {
   const role = getUserRole();

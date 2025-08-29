@@ -2,23 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getUserRole } from "./../utils/auth"; 
-
-type Team = {
-  teamId: number;
-  name: string;
-};
-
-type Bug = {
-    bugId: number;
-    title: string;
-    description: string;
-    status: "open" | "in-progress" | "resolved" | "closed";
-    priority: "low" | "medium" | "high";
-    assignedToUser?: [{ email: string }] | null;
-    assignedToTeam?: { name: string} | null;
-    createdAt: string;
-    updatedAt: string;
-};
+import type { Bug } from "../types/Bug";
+import type { Team } from "../types/Team";
 
 export default function BugEditor() {
     const [form, setForm] = useState({
